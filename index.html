@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Quiz Game</title>
+    <link rel="stylesheet" href="globals.css" />
+    <script type="module" src="./js/app.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ---------------------- HEADER QUIZ --------------- -->
+      <header class="header">
+        <h1 class="header__title">quiz time</h1>
+        <p class="header__text">test your knowledge with these questions.</p>
+        <button
+          class="header__button button button--primary"
+          type="button"
+          aria-label="Press on button to start quiz"
+          id="start-quiz-btn"
+        >
+          start quiz
+        </button>
+      </header>
+      <!-- --------------------- QUESTIONS SECTION ------------ -->
+      <template id="quiz-question-sec">
+        <section class="question-sec" id="question-sec">
+          <h2 class="question-sec__title">HTML5 stands for?</h2>
+          <div class="question-info">
+            <p class="question-info__text">
+              question
+              <span class="question-info__number" id="current-question-number"
+                >1</span
+              >
+              of <span class="question-info__total" id="question-total">5</span>
+            </p>
+            <p class="question-info__score">
+              score:
+              <span class="question-info__result" id="question-info-result"
+                >0</span
+              >
+            </p>
+          </div>
+          <div class="answers-btns">
+            <button
+              class="answers-btns__button button button--secondary selected"
+              type="button"
+              data-correct="correct"
+              aria-label="Press on correct answer"
+              id="answer-btn1"
+            >
+              Hello World this is Lorem ipsum dolor sit amet, consectetur
+              adipisicing elit. Eum at culpa, commodi fugit deleniti tempora
+              voluptate</button
+            ><button
+              class="answers-btns__button button button--secondary selected"
+              type="button"
+              data-correct="wrong"
+              aria-label="Press on correct answer"
+              id="answer-btn2"
+            >
+              Hello World this is Lorem ipsum dolor sit amet, consectetur
+              adipisicing elit. Eum at culpa, commodi fugit deleniti tempora
+              voluptate</button
+            ><button
+              class="answers-btns__button button button--secondary selected"
+              type="button"
+              data-correct=""
+              aria-label="Press on correct answer"
+              id="answer-btn3"
+            ></button
+            ><button
+              class="answers-btns__button button button--secondary"
+              type="button"
+              data-correct=""
+              aria-label="Press on correct answer"
+              id="answer-btn4"
+            ></button>
+          </div>
+          <progress
+            data-value="15"
+            id="progress-bar"
+            class="progress-bar"
+            value="15"
+            max="100"
+          ></progress>
+        </section>
+      </template>
+      <!-- ------------------------ RESULTS SECTION ----------- -->
+      <template id="quiz-result-sec">
+        <section class="result-sec">
+          <h2 class="result-sec__title">quiz results</h2>
+          <div class="result-sec__info">
+            <p class="result-sec__text">
+              you scored <span class="result" id="result">0</span> out of
+              <span class="total-results" id="total-results">5</span>
+            </p>
+            <p class="result-sec__message" id="result-message">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+              corrupti quam, sequi magnam doloribus ex dolore consequuntur
+              expedita facere omnis mollitia alias veniam, iure quo doloremque
+              dolor voluptate hic magni?
+            </p>
+          </div>
+          <button
+            id="restart-quiz-btn"
+            type="button"
+            class="result-sec__button button button--primary"
+            aria-label="Restart quiz again"
+          >
+            restart quiz
+          </button>
+        </section>
+      </template>
+    </div>
+  </body>
+</html>
