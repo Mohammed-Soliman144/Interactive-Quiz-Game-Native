@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interactive Quiz Game</title>
     <link rel="stylesheet" href="globals.css" />
-    <script type="module" src="./js/app.js" defer></script>
+    <script type="module" src="./src/js/main.js" defer></script>
   </head>
   <body>
     <div class="container">
@@ -43,9 +43,9 @@
           </div>
           <div class="answers-btns">
             <button
-              class="answers-btns__button button button--secondary selected"
+              class="answers-btns__button button button--secondary"
               type="button"
-              data-correct="correct"
+              data-correct=""
               aria-label="Press on correct answer"
               id="answer-btn1"
             >
@@ -53,9 +53,9 @@
               adipisicing elit. Eum at culpa, commodi fugit deleniti tempora
               voluptate</button
             ><button
-              class="answers-btns__button button button--secondary selected"
+              class="answers-btns__button button button--secondary"
               type="button"
-              data-correct="wrong"
+              data-correct=""
               aria-label="Press on correct answer"
               id="answer-btn2"
             >
@@ -63,7 +63,7 @@
               adipisicing elit. Eum at culpa, commodi fugit deleniti tempora
               voluptate</button
             ><button
-              class="answers-btns__button button button--secondary selected"
+              class="answers-btns__button button button--secondary"
               type="button"
               data-correct=""
               aria-label="Press on correct answer"

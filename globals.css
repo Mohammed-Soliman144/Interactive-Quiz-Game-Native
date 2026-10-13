@@ -38,12 +38,12 @@ h6 {
   font-size: inherit;
   font-weight: inherit;
   text-wrap: balance;
-  text-overflow: break-word;
+  overflow-wrap: break-word;
 }
 
 p {
   text-wrap: pretty;
-  text-overflow: break-word;
+  overflow-wrap: break-word;
 }
 
 /* 4- LINKS */
@@ -351,7 +351,7 @@ body {
 
 .header__text {
   text-transform: none;
-  font-size: clamp(var(--font-sm), var(--font-md), var(--font-lg));
+  font-size: clamp(var(--font-md), var(--font-lg), var(--font-xl));
 }
 
 .header__text::first-letter {
@@ -377,7 +377,7 @@ body {
 }
 
 .question-sec__title {
-  font-size: clamp(var(--font-md), var(--font-xl), var(--font-2xl));
+  font-size: clamp(var(--font-md), var(--font-lg), var(--font-2xl));
   font-weight: var(--font-bolder);
   color: var(--color-black);
   letter-spacing: -1px;
@@ -414,7 +414,7 @@ body {
   align-items: center;
 }
 
-.answers-btns__button:hover {
+.answers-btns__button:hover:not(:disabled) {
   background-color: color-mix(
     in srgb,
     var(--color-offwhite),
@@ -425,11 +425,17 @@ body {
 .answers-btns__button.selected[data-correct="correct"] {
   background-color: var(--color-info);
   color: var(--color-bold-info);
+  border-color: var(--color-bold-info);
 }
 
 .answers-btns__button.selected[data-correct="wrong"] {
   background-color: var(--color-semi-danger);
   color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.answers-btns__button:disabled {
+  background-color: var(--color-semi-beige);
 }
 
 .progress-bar {
@@ -437,13 +443,15 @@ body {
   -moz-appearance: none;
   appearance: none;
   border: none;
-  width: 50em;
+  width: 40em;
   height: 15px;
   margin-top: var(--space-lg);
   border-radius: var(--radius-lg);
   background-color: var(--color-semi-info);
   overflow: hidden;
-  transition: all 0.4ms ease;
+  transition:
+    color 0.4s ease-in-out,
+    background-color 0.4s ease-in-out;
   max-width: 100%;
 }
 
@@ -468,7 +476,7 @@ body {
 }
 
 /* ============================ RESULTS SECTION ================ */
-.result-sec.active {
+.result-sec {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -503,7 +511,7 @@ body {
 .result-sec__text {
   font-weight: var(--font-bold);
   text-transform: none;
-  font-size: clamp(var(--font-sm), var(--font-md), var(--font-lg));
+  font-size: clamp(var(--font-md), var(--font-lg), var(--font-xl));
 }
 
 .result-sec__text::first-letter {
