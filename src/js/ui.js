@@ -1,6 +1,7 @@
 import { quizState, getResult } from "./state.js"
 import { container, tempResultSec, tempQuizSec } from "./selectors.js"
-import { randomAnswers, decodeEntities, upateLocalStorage } from "./utils.js"
+import { randomAnswers, decodeEntities } from "./utils.js"
+import { checkAnswer } from "./events.js"
 
 /**
  * render result section after cloned from template (#Document.Fragement) to DOM
@@ -8,7 +9,14 @@ import { randomAnswers, decodeEntities, upateLocalStorage } from "./utils.js"
  * @returns {void}
  */
 export function renderResultSection() {
-    let {currScore, questionLength} = quizState
+    // let {currScore, questionLength, curQuesIdx, status} = quizState
+    if(typeof window === "undefined") return
+    const {curQuesIdx, currScore, status, questions} = JSON.parse(localStorage.getItem(quizState.hashIdData))
+    const questionLength = questions.length
+    if(!container.querySelector("header").classList.contains("inactive") && curQuesIdx === questionLength && status !== "in-progress") {
+        container.querySelector("header").classList.remove("active")
+        container.querySelector("header").classList.add("inactive")
+    }
     container.querySelector("#question-sec")?.remove()
     container.querySelector(".result-sec")?.remove()
     const clonedTemp = tempResultSec.content.cloneNode(true)
@@ -58,4 +66,45 @@ export function renderNextQuestion() {
     // increment question index by one
     quizState.curQuesIdx++
     container.appendChild(clonedTemp)
+}
+
+/**
+ * render last question did not answer yet when moving across browser tabs
+ * @returns {void}
+ */
+export function intializeApp() {
+    // remove all old quizSec that cloned after fill previous question and answers
+    // console.log(container.querySelector(".question-sec"))
+    container.querySelector(".question-sec")?.remove()
+    let { hashIdData } = quizState
+
+    // check if window is not undefined to retrieve data from localStorage
+    if(typeof window === "undefined") return 
+    
+    // Extract question from api data
+    const {lastIdxAnswered, currScore, questions} = JSON.parse(localStorage.getItem(hashIdData))
+    const {all: allAnswers, correctAnswer} = randomAnswers(questions[lastIdxAnswered])
+    
+    const clonedTemp = tempQuizSec.content.cloneNode(true)
+    clonedTemp.querySelector(".question-sec").classList.remove("active")
+    clonedTemp.querySelector(".question-sec").classList.add("active")
+    clonedTemp.querySelector(".question-sec h2.question-sec__title").textContent = questions[lastIdxAnswered].question
+    clonedTemp.querySelector("#current-question-number").textContent = lastIdxAnswered + 1
+    clonedTemp.querySelector("#question-total").textContent = questions.length
+    clonedTemp.querySelector("#progress-bar").value =  Math.floor((currScore / questions.length) * 100)
+
+    clonedTemp.querySelector("#question-info-result").textContent = currScore
+    clonedTemp.querySelectorAll(".question-sec .answers-btns button.answers-btns__button").forEach((btn, idx) => {
+        btn.textContent = decodeEntities(allAnswers[idx]) 
+        btn.dataset.correct = allAnswers[idx] === correctAnswer ? "correct" : "wrong"
+    })
+    // // increment question index by one
+    // quizState.curQuesIdx++
+    container.appendChild(clonedTemp)
+    
+    
+    // render next question
+    renderNextQuestion()
+    // attach event click to answer button after click and check answer
+    checkAnswer()
 }

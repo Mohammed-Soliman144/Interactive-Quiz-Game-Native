@@ -3,15 +3,13 @@ import { getQuestions } from "./api.js";
 import { checkAnswer } from "./events.js";
 import { renderNextQuestion } from "./ui.js";
 
-
 // Quiz States
 export const quizState = {
     curQuesIdx: 0,
     currScore: 0,
     lastIdxAnswered: 0,
     questionLength: 0,
-    isRestartBtnClicked: false,
-    isStartBtnClicked: false,
+    status: "idle",
     hashIdData: "quiz-cache-data"
 }
 
@@ -42,7 +40,9 @@ export const resultsState = [
  * @returns {void}
  */
 export function getResult() {
-    const {currScore, questionLength} = quizState
+    if(typeof window === "undefined") return
+    const {currScore, questions} = JSON.parse(localStorage.getItem(quizState.hashIdData))
+    const questionLength = questions.length
     const resultScore = Math.floor((currScore / questionLength) * 100) 
 
     // numeric range so set true (strict equality)
@@ -89,11 +89,10 @@ export async function fetchQuestions() {
         curQuesIdx: quizState.curQuesIdx,
         lastIdxAnswered: quizState.lastIdxAnswered,
         isRestartBtnClicked: quizState.isRestartBtnClicked,
-        isStartBtnClicked: quizState.isStartBtnClicked,
+        status: quizState.status,
         currScore: quizState.currScore
     }
-    
-    
+    // console.log(quizState)
     // update quiz state by hashid of caching api
     quizState.hashIdData = memorizationApi(cache)
     // update quiz state by length of questions

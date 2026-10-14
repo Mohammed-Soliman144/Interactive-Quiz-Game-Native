@@ -91,8 +91,7 @@ function resetQuizState() {
         currScore: 0,
         lastIdxAnswered: 0,
         questionLength: 0,
-        isRestartBtnClicked: false,
-        isStartBtnClicked: false,
+        status: "idle",
         hashIdData: "quiz-cache-data"
     })
 }
@@ -112,10 +111,12 @@ export function getScore() {
  * update localStorage by quiz states
  * @returns {void}
  */
-export function upateLocalStorage() {
+export function updateLocalStorage() {
     if(typeof(window) === "undefined") return
-    const {curQuesIdx, currScore, lastIdxAnswered, hashIdData, isStartBtnClicked, isRestartBtnClicked} = quizState
+    // const {curQuesIdx, currScore, lastIdxAnswered, hashIdData, isStartBtnClicked, isRestartBtnClicked} = quizState
+    const {curQuesIdx, currScore, lastIdxAnswered, hashIdData, status} = quizState
     const item = JSON.parse(localStorage.getItem(hashIdData))
     if(!item) return
-    localStorage.setItem(hashIdData, JSON.stringify({...item, curQuesIdx, currScore, lastIdxAnswered, isStartBtnClicked, isRestartBtnClicked}))
+    localStorage.setItem(hashIdData, JSON.stringify({...item, curQuesIdx, currScore, lastIdxAnswered, status}))
+    // console.log(item)
 }
