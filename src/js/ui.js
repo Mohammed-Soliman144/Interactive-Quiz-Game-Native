@@ -13,7 +13,7 @@ export function renderResultSection() {
     if(typeof window === "undefined") return
     const {curQuesIdx, currScore, status, questions} = JSON.parse(localStorage.getItem(quizState.hashIdData))
     const questionLength = questions.length
-    if(!container.querySelector("header").classList.contains("inactive") && curQuesIdx === questionLength && status !== "in-progress") {
+    if(!container.querySelector("header").classList.contains("inactive") && curQuesIdx === questionLength) {
         container.querySelector("header").classList.remove("active")
         container.querySelector("header").classList.add("inactive")
     }
@@ -36,7 +36,6 @@ export function renderResultSection() {
  */
 export function renderNextQuestion() {
     // remove all old quizSec that cloned after fill previous question and answers
-    // console.log(container.querySelector(".question-sec"))
     container.querySelector(".question-sec")?.remove()
     let { hashIdData, curQuesIdx, currScore, questionLength } = quizState
     
@@ -56,7 +55,7 @@ export function renderNextQuestion() {
     clonedTemp.querySelector(".question-sec h2.question-sec__title").textContent = questions[curQuesIdx].question
     clonedTemp.querySelector("#current-question-number").textContent = curQuesIdx + 1
     clonedTemp.querySelector("#question-total").textContent = questionLength
-    clonedTemp.querySelector("#progress-bar").value =  Math.floor((currScore / questionLength) * 100)
+    clonedTemp.querySelector("#progress-bar").value =  Math.floor(( (curQuesIdx + 1) / questionLength) * 100)
 
     clonedTemp.querySelector("#question-info-result").textContent = currScore
     clonedTemp.querySelectorAll(".question-sec .answers-btns button.answers-btns__button").forEach((btn, idx) => {
@@ -74,7 +73,6 @@ export function renderNextQuestion() {
  */
 export function intializeApp() {
     // remove all old quizSec that cloned after fill previous question and answers
-    // console.log(container.querySelector(".question-sec"))
     container.querySelector(".question-sec")?.remove()
     let { hashIdData } = quizState
 

@@ -1,7 +1,8 @@
 /* ============================ Fetching question from API (trivia api) ===================== */
+import { quizState } from "./state.js"
 // API EndPoint (BASE URL)
 const API_URL = "https://opentdb.com/api.php"
-const QUESTIONS_LENGHT = "3"
+const QUESTIONS_LENGHT = "30"
 const CATEGORY = "18"
 const DIFFCULTY = "medium"
 const TYPE = "multiple"
@@ -17,11 +18,17 @@ export async function getQuestions() {
             method: "GET",
             signal: controller.signal
         })
-        if(!response.ok)
+        if(!response.ok){
+            quizState.error = `HTTP Error ${response.status} - ${response.statusText}`
+            console.log(quizState)
             throw new Error(`HTTP Error ${response.status} - ${response.statusText}`)
+        }
+            
         const data = await response.json()
         return data
     } catch(err) {
+        quizState.error = `Failed to fetch, ${err}`
+        console.log(quizState)
         console.error(`Failed to fetch`, err)
     }
 }

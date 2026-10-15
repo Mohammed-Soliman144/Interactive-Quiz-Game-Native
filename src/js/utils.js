@@ -1,5 +1,5 @@
 import { quizState } from "./state.js"
-import { container } from "./selectors.js"
+import { container, header } from "./selectors.js"
 
 // caching data fetched from api
 export const cacheQuestions = new Map()
@@ -92,7 +92,8 @@ function resetQuizState() {
         lastIdxAnswered: 0,
         questionLength: 0,
         status: "idle",
-        hashIdData: "quiz-cache-data"
+        hashIdData: "quiz-cache-data",
+        error: ""
     })
 }
 
@@ -113,10 +114,26 @@ export function getScore() {
  */
 export function updateLocalStorage() {
     if(typeof(window) === "undefined") return
-    // const {curQuesIdx, currScore, lastIdxAnswered, hashIdData, isStartBtnClicked, isRestartBtnClicked} = quizState
-    const {curQuesIdx, currScore, lastIdxAnswered, hashIdData, status} = quizState
+    const { hashIdData } = quizState
     const item = JSON.parse(localStorage.getItem(hashIdData))
     if(!item) return
-    localStorage.setItem(hashIdData, JSON.stringify({...item, curQuesIdx, currScore, lastIdxAnswered, status}))
-    // console.log(item)
+    item.curQuesIdx = quizState.curQuesIdx
+    item.currScore = quizState.currScore
+    item.lastIdxAnswered = quizState.lastIdxAnswered
+    item.status = quizState.status
+    localStorage.setItem(hashIdData, JSON.stringify(item))
+}
+
+export function isQuestionsFetched() {
+    if(typeof window === "undefined") return false
+    const item = JSON.parse(localStorage.getItem(quizState.hashIdData)) 
+    if(!item) return false
+    if(item.status === "in-progress") {
+        // remove active class from header
+        header.classList.remove("active")
+        // add active class from header
+        header.classList.add("inactive")
+        return true
+    }
+    return false
 }

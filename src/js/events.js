@@ -1,8 +1,8 @@
+import { startQuiz } from "./main.js"
 import { quizState } from "./state.js"
-import { getScore, updateLocalStorage } from "./utils.js"
+import { getScore, resetAnswers, updateLocalStorage } from "./utils.js"
 import { container, header, startQuizBtn } from "./selectors.js"
-import { renderNextQuestion, renderResultSection } from "./ui.js"
-
+import { renderNextQuestion, renderResultSection, intializeApp } from "./ui.js"
 
 let isBtnPressed = false
 let isRestartBtnPressed = false
@@ -21,8 +21,7 @@ export function restartQuiz() {
             header.classList.remove("inactive")
             header.classList.add("active")
             startQuizBtn.disabled = false
-            quizState.status = "finished"
-            updateLocalStorage()
+            resetAnswers()
             isRestartBtnPressed = false
         }
     })
@@ -48,6 +47,7 @@ export function checkAnswer() {
                     button.disabled = true
                     isBtnPressed = true
                     quizState.lastIdxAnswered = quizState.curQuesIdx - 1 
+                    quizState.status = "in-progress"
                     // update current score of quiz state
                     getScore()
                     // update LocalStorage
@@ -71,10 +71,55 @@ export function checkAnswer() {
                     setTimeout(() => {
                         renderResultSection()
                         restartQuiz()
+                        quizState.status = "finished"
+                        updateLocalStorage()
                         isBtnPressed = false
                     }, 1500)
             }
         })
 }
 
+/**
+ * load last status of quiz app when DOM content loaded
+ * 
+ * start quiz => status => idle (quiz state)
+ * 
+ * each question processed => status => in-progress (storage - persistence)
+ * 
+ * Render Result Section => status => finished (storage - persistence)
+ * 
+ * Restart Quiz => status => idle (quiz state)
+ * @returns {void}
+ */
+export function loadContent() {
+    document.addEventListener("DOMContentLoaded", () => {
+        if(typeof(window) === "undefined") return
+        const {hashIdData} = quizState
+        const item = JSON.parse(localStorage.getItem(hashIdData))
+        if(!item) return
+        const {curQuesIdx, lastIdxAnswered, currScore, questions, status} = item
+        
+        // start quiz => status => idle
+        // each question processed => status => in-progress
+        // Render Result Section => status => finished
+        // Restart Quiz => status => idle
+        if(status === "idle") {
+            // Start Quiz which status is idle
+            startQuizBtn.click()
+        } else if (status === "finished") {
+            // Reach last question and curQuesIdx === questions.length
+            // render Results Section 
+            renderResultSection()
+            restartQuiz()
+        } else if (status === "in-progress") {
+            // each question processed => status => in-progress
+            quizState.curQuesIdx = curQuesIdx
+            quizState.lastIdxAnswered = lastIdxAnswered
+            quizState.currScore = currScore
+            quizState.questionLength = questions.length
+            startQuiz()
+            intializeApp()
+        }
+    })
+}
 

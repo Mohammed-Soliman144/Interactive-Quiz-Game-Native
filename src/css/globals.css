@@ -121,6 +121,53 @@ body {
   display: flex;
 }
 
+.header__button {
+  width: fit-content;
+  height: 60px;
+}
+
+.header__button:disabled {
+  background-color: color-mix(in srgb, var(--color-orange) 80%, transparent);
+}
+
+.header__button__text.spinner {
+  display: inline-block;
+  padding-left: calc(var(--space-xl) + 0.5rem);
+}
+
+.header__button.spinner {
+  padding-inline: var(--space-md);
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: not-allowed;
+}
+
+.header__button.spinner::after {
+  content: "";
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: transparent;
+  position: absolute;
+  left: 5px;
+  z-index: 3;
+  border: 5px solid color-mix(in srgb, var(--color-hover) 40%, transparent);
+  border-left-color: color-mix(in srgb, var(--color-hover) 90%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--color-hover) 90%, transparent);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* ============================ QUESTIONS SECTION ==========  */
 .question-sec.active {
   display: flex;

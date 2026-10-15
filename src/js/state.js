@@ -1,7 +1,8 @@
-import { memorizationApi, resetAnswers} from "./utils.js";
+import { memorizationApi, resetAnswers, updateLocalStorage} from "./utils.js";
 import { getQuestions } from "./api.js";
 import { checkAnswer } from "./events.js";
 import { renderNextQuestion } from "./ui.js";
+import { quizSpan, startQuizBtn, header } from "./selectors.js";
 
 // Quiz States
 export const quizState = {
@@ -10,7 +11,8 @@ export const quizState = {
     lastIdxAnswered: 0,
     questionLength: 0,
     status: "idle",
-    hashIdData: "quiz-cache-data"
+    hashIdData: "quiz-cache-data",
+    error: ""
 }
 
 // Resul tStates
@@ -81,23 +83,42 @@ export async function fetchQuestions() {
     resetAnswers()
     // Fetch Data from Open Trivia DB 
     // extract or destructuring questions as array from api
-    const {results: questions} = await getQuestions()
-    
+    const data = await getQuestions()
+
+    // check if quiz state is return error when fetching questions from api
+    if(!data && quizState.error){
+        startQuizBtn.classList.toggle("spinner")
+        quizSpan.classList.toggle("spinner")
+        startQuizBtn.disabled = false
+        quizSpan.textContent = "Retry Loading"
+        return
+    } else {
+        // remove active class from header
+        header.classList.remove("active")
+        // add active class from header
+        header.classList.add("inactive")
+    }
+
+    const {results: questions} = data
+
+    // update quiz state to in-progress
+    quizState.status = "in-progress"
+
     // caching data fetched from api
     const cache = {
         questions: questions,
         curQuesIdx: quizState.curQuesIdx,
         lastIdxAnswered: quizState.lastIdxAnswered,
-        isRestartBtnClicked: quizState.isRestartBtnClicked,
         status: quizState.status,
         currScore: quizState.currScore
     }
-    // console.log(quizState)
     // update quiz state by hashid of caching api
     quizState.hashIdData = memorizationApi(cache)
     // update quiz state by length of questions
     quizState.questionLength = questions.length
     
+    // update localStorage
+    updateLocalStorage()
     // render next question
     renderNextQuestion()
     // attach event click to answer button after click and check answer
